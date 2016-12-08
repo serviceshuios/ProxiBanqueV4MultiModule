@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Proxibanque SI</title>
+
+</h:head>
+<h:body>
+
+	<f:facet name="last">
+		<h:outputStylesheet name="custom.css" library="css" />
+	</f:facet>
+
+	<p:panel style="background:#F2F7F9;">
+		<h:outputText value="ProxiBankV4 - Intranet" />
+		<div style="height: 80px" />
+	</p:panel>
+
+
+	<h:form id="loginForm" >
+		<h:panelGrid columns="2">
+			<p:outputLabel for="login" value="Login : " />
+			<p:inputText id="login" value="#{loginBean.employe.login}" />
+			<p:outputLabel for="password" value="Password : " />
+			<p:password id="password" value="#{loginBean.employe.mdp}"/>
+			<p:commandButton type="submit" value="Se connecter" action="#{loginBean.authentification}" />
+		</h:panelGrid>
+	</h:form>
+
+</h:body>
+</html>

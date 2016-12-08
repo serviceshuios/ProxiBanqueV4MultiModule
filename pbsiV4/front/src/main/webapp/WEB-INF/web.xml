@@ -1,0 +1,90 @@
+
+
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+
+	<display-name>Archetype Created Web Application</display-name>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/springContext.xml</param-value>
+	</context-param>
+    
+	<servlet>
+		<servlet-name>faces servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>faces servlet</servlet-name>
+		<url-pattern>/faces/*</url-pattern>
+	</servlet-mapping>
+
+
+
+
+
+	<resource-ref>
+		<description>DB Connection</description>
+		<res-ref-name>jdbc/test</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	
+	<security-constraint>
+		<display-name>Test d'authentification Conseiller</display-name>
+		<web-resource-collection>
+			<web-resource-name>Page sécurisée Conseiller</web-resource-name>
+			<url-pattern>/faces/cons/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>CONSEILLER</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<display-name>Test d'authentification Gerant</display-name>
+		<web-resource-collection>
+			<web-resource-name>Page sécurisée Gerant</web-resource-name>
+			<url-pattern>/faces/ger/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>GERANT</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>Espaces membres</realm-name>
+		<form-login-config>
+			<form-login-page>/faces/login-page.xhtml</form-login-page>
+			<form-error-page>/faces/erreur.xhtml</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-role>
+		<description>Conseiller</description>
+		<role-name>CONSEILLER</role-name>
+	</security-role>
+	<security-role>
+		<description>Gerant</description>
+		<role-name>GERANT</role-name>
+	</security-role>
+
+	<error-page>
+        <error-code>403</error-code>
+        <location>/faces/erreur.xhtml</location>
+	</error-page>
+
+</web-app>
+
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Liste des conseillers</title>
+
+</h:head>
+
+<h:body>
+
+	<f:facet name="last">
+		<!-- 		<h:outputStylesheet name="custom.css" library="css" /> -->
+	</f:facet>
+
+
+
+	<p:panel style="background:#F2F7F9;">
+		<h:outputText value="ProxiBankV4 - Intranet" />
+		<div style="height: 80px" />
+	</p:panel>
+
+	<h:form id="navform">
+		<p:menubar>
+			<f:facet name="options">
+				<p:commandButton type="submit" value="Logout"
+					action="#{loginBean.logout}" icon="ui-icon-extlink" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+
+
+	<h3 class="title ui-widget-header ui-corner-all">Liste des
+		conseillers</h3>
+
+	<p:outputPanel id="panelclient">
+		<h:form id="form1">
+
+
+
+
+			<p:dataTable id="dataCons" var="cons"
+				value="#{loginBean.employe.listeConseillers}"
+				first="#{cons.id}" paginator="false" rowKey="#{cons.id}"
+				styleClass="ui-datatable" reflow="true" style="margin: 5px;"
+				resizableColumns="true">
+
+				<p:column headerText="Identifiant">
+					<f:facet name="header">Identifiant</f:facet>    				
+            		#{cons.id}
+				</p:column>
+				<p:column headerText="Nom">
+
+					<h:outputText value="#{cons.nom}" />
+				</p:column>
+				<p:column headerText="Prenom">
+					  	
+					#{cons.prenom}
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+
+		<p:chart type="line" model="#{graphicBean.dateModel}"
+			style="height:400px;" />
+
+
+	</p:outputPanel>
+
+</h:body>
+</html>

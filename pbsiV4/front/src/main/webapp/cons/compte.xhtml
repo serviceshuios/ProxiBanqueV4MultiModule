@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Gestion des comptes</title>
+
+</h:head>
+
+<h:body>
+
+	<f:facet name="last">
+		<h:outputStylesheet name="custom.css" library="css" />
+	</f:facet>
+
+	<p:panel style="background:#F2F7F9;">
+		<h:outputText value="ProxiBankV4 - Intranet" />
+		<div style="height: 80px" />
+	</p:panel>
+
+	<h:form id="navform2">
+		<p:menubar>
+			<p:menuitem value="Clients" url="cons/client.xhtml" />
+			<f:facet name="options">
+				<p:commandButton type="submit" value="Logout"
+					action="#{loginBean.logout}" icon="ui-icon-extlink" />
+			</f:facet>
+		</p:menubar>
+	</h:form>
+
+	<h3 class="title ui-widget-header ui-corner-all">Liste des Comptes
+		: #{clientBean.selectedClient.nom}
+		#{cclientBean.selectedClient.prenom} (Client no°:
+		#{clientBean.selectedClient.id})</h3>
+
+	<p:outputPanel id="panelcompte">
+		<h:form id="form3">
+			<p:growl id="growlContext" life="2000" />
+
+			<p:commandButton value="nouveau compte" update="formAjoutCompte"
+				onclick="PF('createCompteDialog').show()" icon="ui-icon-circle-plus" />
+
+			<p:contextMenu for="dataCompte">
+				<p:menuitem value="Virement interne"
+					actionListener="#{compteBean.virementInit}" update="form5"
+					icon="ui-icon-gear" oncomplete="PF('virementDialog').show()" />
+				<p:menuitem value="Virement externe" update="form6"
+					icon="ui-icon-gear" oncomplete="PF('virementDialog2').show()" />
+				<p:menuitem value="Modifier infos" update="form4"
+					icon="ui-icon-pencil" oncomplete="#" />
+				<p:menuitem value="Delete" ajax="false" icon="ui-icon-close"
+					actionListener="#{compteBean.delete}" />
+			</p:contextMenu>
+
+			<p:dataTable id="dataCompte" var="comp"
+				value="#{clientBean.selectedClient.listeComptes}"
+				selection="#{compteBean.selectedCompte}" selectionMode="single"
+				rowKey="#{comp.numCompte}" first="#{comp.numCompte}"
+				paginator="false" styleClass="ui-datatable" reflow="true"
+				style="margin: 5px;" resizableColumns="true">
+
+				<p:ajax event="rowSelect" update="form3:dataCompte"
+					listener="#{compteBean.onCompteSelect}" />
+
+				<p:column headerText="Type Compte">				
+            		#{comp}
+				</p:column>
+				<p:column headerText="NumCompte">
+					#{comp.numCompte}
+				</p:column>
+				<p:column headerText="DateOuverture">  	
+					#{comp.dateOuverture}
+				</p:column>
+				<p:column headerText="Solde">	  	
+					#{comp.solde}
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+
+
+		<p:dialog header="Mise à jour infos Compte" widgetVar="updateDialog"
+			modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+			<h:form id="form4">
+				<p:growl id="growlUpdate2" life="2000" />
+
+				<h:panelGrid id="grid2" columns="2" cellpadding="5">
+
+					<p:outputLabel for="dateouv" value="Date d'ouverture :" />
+					<p:inputText id="dateouv"
+						value="#{compteBean.selectedCompte.dateOuverture}" required="true" />
+
+					<p:outputLabel for="solde" value="Solde :" />
+					<p:inputText id="solde" value="#{compteBean.selectedCompte.solde}"
+						required="true" />
+
+					<p:outputLabel for="decouvert" value="Decouvert autorisé :" />
+					<p:inputText id="decouvert" value="#" required="true" />
+
+					<p:outputLabel for="txremun" value="Taux remuneration :" />
+					<p:inputText id="txremun" value="#" required="true" />
+
+					<p:commandButton type="submit" value="Update" update="form4"
+						action="#{compteBean.update}" icon="ui-icon-check" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Virement" widgetVar="virementDialog" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<h:form id="form5">
+				<p:growl id="growlvirement" life="2000" />
+				<h:panelGrid id="grid2" columns="2" cellpadding="5">
+
+					<p:outputLabel for="CompteSource" value="Compte Source:" />
+					<p:selectOneMenu id="CompteSource" value="source"
+						style="width:300px">
+						<f:selectItem
+							itemLabel="Compte #{compteBean.selectedCompte.toString()} : #{compteBean.selectedCompte.solde}"
+							itemValue="0" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="CompteDestination" value="Compte Destination:" />
+					<p:selectOneMenu id="CompteDestination" value="destination"
+						style="width:300px">
+						<f:selectItem
+							itemLabel="Compte #{compteBean.destination} : #{compteBean.destination.solde}"
+							itemValue="0" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="montant" value="Montant:" />
+					<p:inputText id="montant" value="#{compteBean.montant}"
+						required="true">
+						<f:validateDoubleRange minimum="0.0" />
+					</p:inputText>
+					<p:commandButton type="submit" value="Virer" update="form5"
+						actionListener="#{compteBean.virement}" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Virement externe" widgetVar="virementDialog2"
+			modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+			<h:form id="form6">
+				<p:growl id="growlvirement2" life="2000" />
+				<h:panelGrid id="grid2" columns="2" cellpadding="5">
+
+					<p:outputLabel for="CompteSource" value="Compte Source:" />
+					<p:selectOneMenu id="CompteSource" value="source"
+						style="width:300px">
+						<f:selectItem
+							itemLabel="Compte #{compteBean.selectedCompte.toString()} : #{compteBean.selectedCompte.solde}"
+							itemValue="0" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="idCompteDestination"
+						value="No Compte destination:" />
+					<p:inputText id="idCompteDestination"
+						value="#{compteBean.idCompteExterneDestination}" required="true" />
+
+					<p:outputLabel for="montant" value="Montant:" />
+					<p:inputText id="montant" value="#{compteBean.montant}"
+						required="true">
+						<f:validateDoubleRange minimum="0.0" />
+					</p:inputText>
+					<p:commandButton type="submit" value="Virer" update="form6"
+						actionListener="#{compteBean.virementExterne}" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Creation compte" widgetVar="createCompteDialog"
+			modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+			<h:form id="formAjoutCompte">
+				<p:growl id="growlcomptecreate" life="2000" />
+
+				<h:panelGrid id="grid2" columns="2" cellpadding="5">
+
+					<p:outputLabel for="typecompte" value="Type de compte:" />
+					<p:selectOneRadio id="typecompte"
+						value="#{compteBean.typeCompteACree}">
+						<f:selectItem itemLabel="Courant" itemValue="courant" />
+						<f:selectItem itemLabel="Epargne" itemValue="epargne" />
+					</p:selectOneRadio>
+
+					<p:outputLabel for="solde" value="Solde :" />
+					<p:inputText id="solde" value="#{compteBean.solde}" required="true" />
+
+					<p:outputLabel for="option" value="Option :" />
+					<p:inputText id="option" value="#{compteBean.option}"
+						required="true" />
+
+					<p:commandButton type="submit" value="Creer" ajax="false"
+						action="#{compteBean.create}" icon="ui-icon-check" />
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</p:outputPanel>
+
+
+</h:body>
+</html>
